@@ -1,12 +1,10 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const GOOGLE_IMG_SCRAP = require('google-img-scrap').GOOGLE_IMG_SCRAP;
 const GOOGLE_QUERY = require('google-img-scrap').GOOGLE_QUERY;
-const {google} = require('googleapis');
-const fs = require('fs');
 const axios = require('axios');
 
 // Konfigurasi Gemini API
-const genAI = new GoogleGenerativeAI('AIzaSyBpUlpu6Ekn1YSE8aCdhUBKGPEffpop7wc'); // Ganti dengan API Key Gemini kamu
+const genAI = new GoogleGenerativeAI('YOUR_GEMINI_API_KEY'); // Ganti dengan API Key Gemini kamu
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // Fungsi untuk scraping gambar dari Google Images (5 gambar)
@@ -57,53 +55,27 @@ function createBlogPostContent(keyword, imageUrls, article) {
   let content = `<h1>${keyword}</h1>`;
 
   if (imageUrls.length > 0) {
-    content += `<img src="${imageUrls[0]}" alt="${keyword} - Main image"><br>`; // Alt text lebih deskriptif
+    content += `<img src="${imageUrls[0]}" alt="${keyword} - Main image"><br>`; 
 
     content += article;
 
     if (imageUrls.length > 1) {
-      content += '<div class="image-gallery" style="display: flex; flex-wrap: wrap; justify-content: space-between;">'; // Tambahkan class CSS
+      content += '<div class="image-gallery" style="display: flex; flex-wrap: wrap; justify-content: space-between;">';
       for (let i = 1; i < imageUrls.length; i++) {
         content += `
           <figure style="width: 48%; margin-bottom: 10px;"> 
             <img src="${imageUrls[i]}" alt="${keyword} - Gallery image ${i}">
             <figcaption>Image caption ${i}</figcaption>  
-          </figure>`; // Tambahkan figcaption
+          </figure>`;
       }
       content += '</div>';
     }
   } else {
-    content += `<p>No images found for ${keyword}.</p>`; // Pesan jika tidak ada gambar
+    content += `<p>No images found for ${keyword}.</p>`;
     content += article;
   }
 
   return content;
-}
-
-
-// Fungsi untuk posting ke Blogger menggunakan API
-async function postToBlogger(title, content, blogId, refreshToken, clientId, clientSecret) {
-  try {
-    // Inisialisasi Google Client dengan refresh token
-    const client = new google.auth.OAuth2(clientId, clientSecret);
-    client.setCredentials({ refresh_token: refreshToken });
-
-    // Buat objek Blogger API
-    const blogger = google.blogger({ version: 'v3', auth: client });
-
-    // Buat resource post baru
-    const res = await blogger.posts.insert({
-      blogId: blogId,
-      resource: {
-        title: title,
-        content: content,
-      },
-    });
-
-    console.log('Post berhasil dibuat:', res.data.url);
-  } catch (error) {
-    console.error('Gagal membuat post:', error);
-  }
 }
 
 // Fungsi utama
@@ -114,11 +86,6 @@ async function main() {
 
   const keywords = response.data.split(',');
 
-  // Baca refresh token, client ID, dan client secret dari file
-  const refreshToken = fs.readFileSync(`admin.txt`, 'utf8');
-  const clientId = fs.readFileSync(`client_id.txt`, 'utf8');
-  const clientSecret = fs.readFileSync(`client_secret.txt`, 'utf8');
-
   for (const keyword of keywords) {
     if (keyword.trim() !== "") {
       try {
@@ -127,8 +94,13 @@ async function main() {
         const article = await generateArticle(keyword);
         const content = createBlogPostContent(keyword, imageUrls, article);
 
-        // Post ke Blogger
-        await postToBlogger(keyword, content, '6914798631123351311', refreshToken, clientId, clientSecret); 
+        // Kirim data ke post_to_blogger.php
+        const response = await axios.post(`https://blogkeren.web.id/post_to_blogger.php?user_id=1&blog_id=6914798631123351311&api_key=YOUR_API_KEY`, { 
+          title: keyword,
+          content: content
+        });
+
+        console.log('Response dari server:', response.data);
 
       } catch (error) {
         console.error(`Error memproses keyword ${keyword}:`, error);
