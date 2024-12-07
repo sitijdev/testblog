@@ -65,7 +65,7 @@ function createBlogPostContent(keyword, imageUrls, article) {
         content += `
           <figure style="width: 48%; margin-bottom: 10px;"> 
             <img src="${imageUrls[i]}" alt="${keyword} - Gallery image ${i}">
-            <figcaption>Picture ${i} for ${keyword}</figcaption>  
+            <figcaption>Image ${i} for ${keyword} Gallery</figcaption>  
           </figure>`;
       }
       content += '</div>';
