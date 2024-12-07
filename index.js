@@ -4,7 +4,7 @@ const GOOGLE_QUERY = require('google-img-scrap').GOOGLE_QUERY;
 const axios = require('axios');
 
 // Konfigurasi Gemini API
-const genAI = new GoogleGenerativeAI('YOUR_GEMINI_API_KEY'); // Ganti dengan API Key Gemini kamu
+const genAI = new GoogleGenerativeAI('AIzaSyBpUlpu6Ekn1YSE8aCdhUBKGPEffpop7wc'); // Ganti dengan API Key Gemini kamu
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // Fungsi untuk scraping gambar dari Google Images (5 gambar)
