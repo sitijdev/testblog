@@ -29,6 +29,7 @@ async function scrapeImages(keyword) {
     return [];
   }
 }
+
 // Fungsi untuk generate artikel dengan Gemini API
 async function generateArticle(keyword) {
   const prompt = `Buat artikel dalam bahasa inggris yang memenuhi kriteria artikel seo sempurna tentang ${keyword}. Artikel terdiri dari 5 alinea dengan susunan yang rapi dan profesional. Artikel harus enak dibaca dan sudah siap tayang tanpa perlu edit lagi. Jangan gunakan karakter * (bintang) di artikel yang dibuat!`;
@@ -43,7 +44,7 @@ async function generateArticle(keyword) {
     // Bungkus setiap alinea dengan tag <p>
     const formattedText = paragraphs.map(paragraph => `<p>${paragraph}</p>`).join('');
 
-    console.log('Generated 1  article:', formattedText);
+    console.log('Generated article:', formattedText);
     return formattedText;
   } catch (error) {
     console.error('Error Gemini API:', error);
@@ -79,11 +80,12 @@ function createBlogPostContent(keyword, imageUrls, article) {
   return content;
 }
 
+
 // Fungsi untuk posting ke Blogger menggunakan API
-async function postToBlogger(title, content, blogId, refreshToken) {
+async function postToBlogger(title, content, blogId, refreshToken, clientId, clientSecret) {
   try {
     // Inisialisasi Google Client dengan refresh token
-    const client = new google.auth.OAuth2();
+    const client = new google.auth.OAuth2(clientId, clientSecret);
     client.setCredentials({ refresh_token: refreshToken });
 
     // Buat objek Blogger API
@@ -112,8 +114,10 @@ async function main() {
 
   const keywords = response.data.split(',');
 
-  // Baca refresh token dari file
+  // Baca refresh token, client ID, dan client secret dari file
   const refreshToken = fs.readFileSync(`admin.txt`, 'utf8');
+  const clientId = fs.readFileSync(`client_id.txt`, 'utf8');
+  const clientSecret = fs.readFileSync(`client_secret.txt`, 'utf8');
 
   for (const keyword of keywords) {
     if (keyword.trim() !== "") {
@@ -124,7 +128,7 @@ async function main() {
         const content = createBlogPostContent(keyword, imageUrls, article);
 
         // Post ke Blogger
-        await postToBlogger(keyword, content, '6914798631123351311', refreshToken); 
+        await postToBlogger(keyword, content, '6914798631123351311', refreshToken, clientId, clientSecret); 
 
       } catch (error) {
         console.error(`Error memproses keyword ${keyword}:`, error);
