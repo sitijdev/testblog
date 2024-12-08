@@ -81,7 +81,7 @@ function createBlogPostContent(keyword, imageUrls, article) {
 // Fungsi utama
 async function main() {
   const response = await axios.get(
-    'https://raw.githubusercontent.com/fdciabdul/Google-Trends-Keywords-Scraper/main/forcopied/AUSTRALIA.txt'
+    'https://raw.githubusercontent.com/fdciabdul/Google-Trends-Keywords-Scraper/main/forcopied/UNITED STATES.txt'
   );
 
   const keywords = response.data.split(',');
@@ -95,7 +95,7 @@ async function main() {
         const content = createBlogPostContent(keyword, imageUrls, article);
 
         // Kirim data ke post_to_blogger.php
-        const response = await axios.post(`https://blogkeren.web.id/post_to_blogger.php?user_id=1&blog_id=437020459781975729&api_key=BKKUwFNLPY04`, { 
+        const response = await axios.post(`https://blogkeren.web.id/post_to_blogger.php?user_id=1&blog_id=5926905514196487955&api_key=BKKUwFNLPY04`, { 
           title: keyword,
           content: content
         });
