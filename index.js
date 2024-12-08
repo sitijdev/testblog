@@ -81,7 +81,7 @@ function createBlogPostContent(keyword, imageUrls, article) {
 // Fungsi utama
 async function main() {
   const response = await axios.get(
-    'https://raw.githubusercontent.com/fdciabdul/Google-Trends-Keywords-Scraper/main/forcopied/UNITED STATES.txt'
+    'https://raw.githubusercontent.com/fdciabdul/Google-Trends-Keywords-Scraper/main/forcopied/AUSTRALIA.txt'
   );
 
   const keywords = response.data.split(',');
