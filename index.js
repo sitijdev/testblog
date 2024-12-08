@@ -95,7 +95,7 @@ async function main() {
         const content = createBlogPostContent(keyword, imageUrls, article);
 
         // Kirim data ke post_to_blogger.php
-        const response = await axios.post(`https://blogkeren.web.id/post_to_blogger.php?user_id=1&blog_id=5926905514196487955&api_key=BKKUwFNLPY04`, { 
+        const response = await axios.post(`https://blogkeren.web.id/post_to_blogger.php?user_id=1&blog_id=5926905514196487955&api_key=BKKUwFNLPY04&blogger_account_id=7`, { 
           title: keyword,
           content: content
         });
